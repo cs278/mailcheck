@@ -11,8 +11,21 @@
  * v 1.1
  */
 
-var Kicksend = {
-  mailcheck : {
+(function(root, factory, jQueryBinding) {
+  if (typeof define === 'function' && define.amd) {
+    define('mailcheck', [], factory);
+  define('jquery.mailcheck', ['jquery', 'mailcheck'], jQueryBinding)
+  } else {
+    root.Kicksend = {
+      mailcheck: factory()
+    };
+
+    if (root.jQuery) {
+      jQueryBinding(root.jQuery, root.Kicksend.mailcheck);
+    }
+  }
+}(this, function() {
+  return {
     threshold: 3,
 
     defaultDomains: ["yahoo.com", "google.com", "hotmail.com", "gmail.com", "me.com", "aol.com", "mac.com",
@@ -179,29 +192,25 @@ var Kicksend = {
         address: parts.join('@')
       }
     }
-  }
-};
-
-if (window.jQuery) {
-  (function($){
-    $.fn.mailcheck = function(opts) {
-      var self = this;
-      if (opts.suggested) {
-        var oldSuggested = opts.suggested;
-        opts.suggested = function(result) {
-          oldSuggested(self, result);
-        };
-      }
-
-      if (opts.empty) {
-        var oldEmpty = opts.empty;
-        opts.empty = function() {
-          oldEmpty.call(null, self);
-        };
-      }
-
-      opts.email = this.val();
-      Kicksend.mailcheck.run(opts);
+  };
+}, function($, mailcheck) {
+  $.fn.mailcheck = function(opts) {
+    var self = this;
+    if (opts.suggested) {
+      var oldSuggested = opts.suggested;
+      opts.suggested = function(result) {
+        oldSuggested(self, result);
+      };
     }
-  })(jQuery);
-}
+
+    if (opts.empty) {
+      var oldEmpty = opts.empty;
+      opts.empty = function() {
+        oldEmpty.call(null, self);
+      };
+    }
+
+    opts.email = this.val();
+    mailcheck.run(opts);
+  }
+}));

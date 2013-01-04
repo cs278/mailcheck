@@ -11,18 +11,13 @@
  * v 1.1
  */
 
-(function(root, factory, jQueryBinding) {
+(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
-    define('mailcheck', [], factory);
-  define('jquery.mailcheck', ['jquery', 'mailcheck'], jQueryBinding)
+    define(factory);
   } else {
     root.Kicksend = {
       mailcheck: factory()
     };
-
-    if (root.jQuery) {
-      jQueryBinding(root.jQuery, root.Kicksend.mailcheck);
-    }
   }
 }(this, function() {
   return {
@@ -193,24 +188,4 @@
       }
     }
   };
-}, function($, mailcheck) {
-  $.fn.mailcheck = function(opts) {
-    var self = this;
-    if (opts.suggested) {
-      var oldSuggested = opts.suggested;
-      opts.suggested = function(result) {
-        oldSuggested(self, result);
-      };
-    }
-
-    if (opts.empty) {
-      var oldEmpty = opts.empty;
-      opts.empty = function() {
-        oldEmpty.call(null, self);
-      };
-    }
-
-    opts.email = this.val();
-    mailcheck.run(opts);
-  }
 }));

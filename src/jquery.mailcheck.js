@@ -15,7 +15,7 @@
   if (typeof define === 'function' && define.amd) {
     define(['jquery', 'mailcheck'], factory);
   } else {
-    if (root.jQuery) {
+    if (root.jQuery && root.Kicksend.mailcheck) {
       factory(root.jQuery, root.Kicksend.mailcheck);
     }
   }
